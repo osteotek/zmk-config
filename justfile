@@ -55,26 +55,44 @@ build-reset:
 flash-left: build-left
     #!/usr/bin/env bash
     set -euo pipefail
-    mountpoint=$(lsblk -o MOUNTPOINT,LABEL -nr | awk '$2 == "Mriya" {print $1; exit}')
-    if [ -z "$mountpoint" ]; then
+    mountpoint=""
+    if command -v lsblk >/dev/null 2>&1; then
+        mountpoint=$(lsblk -o MOUNTPOINT,LABEL -nr | awk '$2 == "Mriya" {print $1; exit}')
+    elif [ "$(uname -s)" = "Darwin" ]; then
+        if [ -d "/Volumes/Mriya" ]; then
+            mountpoint="/Volumes/Mriya"
+        else
+            mountpoint=$(find /Volumes -maxdepth 1 -mindepth 1 -type d -name "Mriya*" 2>/dev/null | head -n 1 || true)
+        fi
+    fi
+    if [ -z "$mountpoint" ] || [ ! -d "$mountpoint" ]; then
         echo "Error: Mriya drive not found. Double-tap reset on the left half and try again."
         exit 1
     fi
     echo "Flashing left half to $mountpoint ..."
-    cp {{ workdir }}/firmware/mriya_left.uf2 "$mountpoint/mriya_left.uf2"
+    COPYFILE_DISABLE=1 cp {{ workdir }}/firmware/mriya_left.uf2 "$mountpoint/mriya_left.uf2"
     echo "Done! Left half will reboot automatically."
 
 # Flash right half — double-tap reset on the right half first, then run this
 flash-right: build-right
     #!/usr/bin/env bash
     set -euo pipefail
-    mountpoint=$(lsblk -o MOUNTPOINT,LABEL -nr | awk '$2 == "Mriya" {print $1; exit}')
-    if [ -z "$mountpoint" ]; then
+    mountpoint=""
+    if command -v lsblk >/dev/null 2>&1; then
+        mountpoint=$(lsblk -o MOUNTPOINT,LABEL -nr | awk '$2 == "Mriya" {print $1; exit}')
+    elif [ "$(uname -s)" = "Darwin" ]; then
+        if [ -d "/Volumes/Mriya" ]; then
+            mountpoint="/Volumes/Mriya"
+        else
+            mountpoint=$(find /Volumes -maxdepth 1 -mindepth 1 -type d -name "Mriya*" 2>/dev/null | head -n 1 || true)
+        fi
+    fi
+    if [ -z "$mountpoint" ] || [ ! -d "$mountpoint" ]; then
         echo "Error: Mriya drive not found. Double-tap reset on the right half and try again."
         exit 1
     fi
     echo "Flashing right half to $mountpoint ..."
-    cp {{ workdir }}/firmware/mriya_right.uf2 "$mountpoint/mriya_right.uf2"
+    COPYFILE_DISABLE=1 cp {{ workdir }}/firmware/mriya_right.uf2 "$mountpoint/mriya_right.uf2"
     echo "Done! Right half will reboot automatically."
 
 # Clean build artifacts

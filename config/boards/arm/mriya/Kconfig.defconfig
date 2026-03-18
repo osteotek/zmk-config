@@ -3,17 +3,17 @@
 
 if BOARD_MRIYA_LEFT
 
-	config ZMK_KEYBOARD_NAME
+config ZMK_KEYBOARD_NAME
 	default "Mriya"
 
-    config ZMK_SPLIT_BLE_ROLE_CENTRAL
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y
 
 endif # BOARD_MRIYA_LEFT
 
 if BOARD_MRIYA_RIGHT
 
-	config ZMK_KEYBOARD_NAME
+config ZMK_KEYBOARD_NAME
 	default "Mriya Right"
 
 endif # BOARD_MRIYA_RIGHT
@@ -33,6 +33,9 @@ config BT_CTLR
 config ZMK_BATTERY_VOLTAGE_DIVIDER
 	default y
 
+config PINCTRL
+	default y
+	
 if USB
 
 config USB_NRFX

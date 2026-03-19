@@ -1,9 +1,9 @@
 boards:
   - name: mriya_left
-    vendor: mriya
+    vendor: holyswitch
     socs:
       - name: nrf52840
   - name: mriya_right
-    vendor: mriya
+    vendor: holyswitch
     socs:
       - name: nrf52840
